@@ -7,5 +7,9 @@ node_modules/
 playwright-report/
 test-results/
 demo/raw/
-*.log
+reports/*.log
 *.tsbuildinfo
+output/
+reports/screenshots/
+demo/narration-original.srt
+.superpowers/

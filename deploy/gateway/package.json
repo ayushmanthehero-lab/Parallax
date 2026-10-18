@@ -1,0 +1,16 @@
+{
+  "name": "parallax-falkordb-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": { "start": "node main.mjs", "test:smoke": "node smoke.mjs" },
+  "dependencies": {
+    "@falkordblite/linux-x64": "8.2.3-falkordb.4.16.3",
+    "falkordb": "6.8.0",
+    "falkordblite": "0.3.0"
+  },
+  "overrides": {
+    "falkordblite": { "@falkordblite/linux-x64": "8.2.3-falkordb.4.16.3" }
+  }
+}

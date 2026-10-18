@@ -1,0 +1,178 @@
+{
+  "id": "verification_report_c5e34e79-fc51-4f7a-be52-a5fd538ee4c6",
+  "status": "passed",
+  "createdAt": "2026-10-18T13:24:42.802Z",
+  "engine": "FalkorDB",
+  "tenant": "acme",
+  "isolated": true,
+  "synthetic": true,
+  "checks": [
+    {
+      "id": "scenario-verdicts",
+      "name": "Six reviewed scenarios produce the expected bounded verdicts",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 126.319,
+      "details": "beta: VIOLATED; bundle: VIOLATED; equivalent: VALID_WITHIN_BOUND; threshold: VIOLATED; trial: VIOLATED; unknown: UNKNOWN"
+    },
+    {
+      "id": "evidence-traversal",
+      "name": "Source evidence is reached through real multi-hop relationships",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 13.937,
+      "details": "33 evidence paths returned; source and rule revisions are present."
+    },
+    {
+      "id": "native-shortest-path",
+      "name": "Native shortestPath reaches accountable human owners",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 15.304,
+      "details": "4 owners returned with measured path lengths."
+    },
+    {
+      "id": "concurrent-case-merge",
+      "name": "Sixteen coordinators converge on one canonical clarification",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 81.952,
+      "details": "16 acknowledged opens; 1 stored case; 0 duplicates."
+    },
+    {
+      "id": "decision-revision-guard",
+      "name": "Concurrent approvals accept one revision and reject stale writers",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 239.728,
+      "details": "1 approval accepted; 15 stale updates rejected; 3 tasks remain pending."
+    },
+    {
+      "id": "command-idempotency",
+      "name": "Command replay is idempotent and changed payload reuse is rejected",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 25.067,
+      "details": "Exact replay preserved one decision and one task set; a different payload returned COMMAND_REUSED."
+    },
+    {
+      "id": "human-task-boundary",
+      "name": "Approval never substitutes for implementation evidence",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 32.533,
+      "details": "Empty evidence and premature resolution were rejected; human work stayed pending."
+    },
+    {
+      "id": "full-domain-resolution",
+      "name": "Evidence-backed tasks and a fresh full-domain check resolve the case",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 165.94,
+      "details": "All tasks retained evidence; exhaustive adopted-rule verification resolved the case; original violation remains stored."
+    },
+    {
+      "id": "source-revision-staleness",
+      "name": "Reviewed source changes preserve history and reject stale case evidence",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 100.354,
+      "details": "Scenario advanced from revision 1 to 2; old source and counterexample remain; 2 stale memories rejected."
+    },
+    {
+      "id": "tenant-isolation",
+      "name": "Tenant definitions, conversations, cases and learned memory remain separate",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 32.37,
+      "details": "Same visitor, separate tenant graphs: definitions differ as intended and no private conversation, case or learned decision crossed the boundary."
+    },
+    {
+      "id": "lease-fencing",
+      "name": "An expired agent cannot write after another worker takes ownership",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 53.775,
+      "details": "Ownership advanced from fence 1 to 2; stale tool and completion writes were rejected."
+    },
+    {
+      "id": "read-only-enforcement",
+      "name": "GRAPH.RO_QUERY rejects mutation and stores no forbidden node",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 4.213,
+      "details": "The database rejected CREATE through the read-only query channel; no forbidden node exists."
+    },
+    {
+      "id": "client-restart",
+      "name": "Acknowledged graph state survives independent client reconnection",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 7.45,
+      "details": "A new authenticated gateway client read the value after the writing client closed. The gateway executes through the official FalkorDB client. This checks client continuity, not host disaster recovery."
+    },
+    {
+      "id": "concurrent-read-write",
+      "name": "Sixteen workers preserve every acknowledged atomic write under concurrent reads",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 196.389,
+      "details": "16 workers, 128 acknowledged writes, 128 confirmed reads; p50 10.901 ms, p95 19.544 ms; no lost receipts or increments."
+    },
+    {
+      "id": "fixture-cleanup",
+      "name": "Verification fixtures are removed without altering the user workspace",
+      "status": "passed",
+      "passed": true,
+      "durationMs": 4.862,
+      "details": "Both temporary tenant graphs were deleted. Only this measured report is retained in the requested workspace."
+    }
+  ],
+  "concurrency": {
+    "workers": 16,
+    "writesPerWorker": 8,
+    "operations": 128,
+    "attemptedWrites": 128,
+    "acceptedWrites": 128,
+    "readOperations": 128,
+    "storedReceipts": 128,
+    "counterValue": 128,
+    "failedOperations": 0,
+    "staleRejected": 15,
+    "rejectedStaleUpdates": 15,
+    "guardedWrites": 1,
+    "duplicateCases": 0,
+    "lostAcknowledgedWrites": 0,
+    "p50Ms": 10.901,
+    "p95Ms": 19.544,
+    "maxMs": 25.481,
+    "latencyMs": {
+      "p50": 10.901,
+      "p95": 19.544,
+      "max": 25.481
+    }
+  },
+  "durationMs": 1203.649,
+  "methodology": "Real typed graph queries, application mutations and independent client connections. All fixtures use private temporary graphs. Latency measures acknowledged counter writes; counts come from queries after all workers settle.",
+  "connection": {
+    "status": "connected",
+    "engine": "FalkorDB",
+    "version": "41603",
+    "ping": "PONG",
+    "persistent": false,
+    "persistence": "append-only log / host durability unconfirmed",
+    "persistenceHealthy": true,
+    "storage": "unconfirmed",
+    "transport": "local HTTP gateway / private Unix socket",
+    "checkedAt": "2026-10-18T13:24:42.904Z"
+  },
+  "duplicateCases": 0,
+  "staleRejected": 15,
+  "guardedWrites": 1,
+  "completedAt": "2026-10-18T13:24:44.005Z",
+  "summary": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0
+  }
+}

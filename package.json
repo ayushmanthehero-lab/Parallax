@@ -1,0 +1,41 @@
+{
+  "name": "parallax-graph",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "test": "node --test tests/*.test.mjs",
+    "test:domain": "node --test tests/checker.test.mjs",
+    "test:integration": "node --test tests/integration.test.mjs tests/mcp.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "db": "node scripts/local-db.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "@vercel/oidc": "4.0.1",
+    "falkordb": "6.8.0",
+    "lucide-react": "^0.468.0",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@sparticuz/chromium": "^153.0.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "falkordblite": "0.3.0",
+    "typescript": "^5.9.3"
+  },
+  "optionalDependencies": {
+    "@falkordblite/linux-x64": "^8.2.3-falkordb.4.16.3"
+  }
+}
