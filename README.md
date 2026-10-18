@@ -8,6 +8,10 @@ PARALLAX is a graph-backed investigation and coordination workspace for **Graph 
 
 Source: [ayushmanthehero-lab/Parallax](https://github.com/ayushmanthehero-lab/Parallax). [reports/PROGRESS.md](reports/PROGRESS.md) records deployment and verification evidence. A configured project or successful web build alone does not establish a working hosted database.
 
+**Deployment checkpoint (18 October 2026):** the [public Vercel homepage](https://parallax-graph-sigma.vercel.app) is deployed and returns HTTP 200. The graph-backed API currently returns `503 DATABASE_NOT_CONFIGURED` pending its selected FalkorDB Cloud connection. The complete workflow has been verified locally through the real FalkorDB HTTP gateway; this checkpoint does not claim a Cloud instance is provisioned or the hosted workflow is available yet. Check the release record for subsequent status.
+
+**Selected hosting:** Vercel hosts the website and application API; its official FalkorDB client connects directly to **FalkorDB Cloud**, the database for connected evidence, actions, agent memory and shared state. Railway is an optional self-hosting reference for running the same real engine on compute and disk. It is not required or selected for this hosted route.
+
 ## What is implemented
 
 | Capability | Working behavior |
@@ -21,7 +25,7 @@ Source: [ayushmanthehero-lab/Parallax](https://github.com/ayushmanthehero-lab/Pa
 | Workspace separation | Server-selected graph per visitor/company pair; Acme Orbit and Nova Labs intentionally have different trial semantics |
 | Interface | Overview, handoffs, cases, tasks, interactive graph, sources/intake, memory, agent activity, verification/audit and settings |
 | Verification | Domain, real-engine, MCP, gateway and provider tests; an isolated in-app lab measures concurrency instead of displaying invented benchmarks |
-| Hosting design | Next.js on Vercel; authenticated HTTPS gateway and actual FalkorDB on a separate persistent Railway volume |
+| Hosting design | Next.js on Vercel connects directly to FalkorDB Cloud through the official SDK; a tested self-hosted gateway is also included |
 
 The demonstration uses fictional organizations and sources. Three named agent roles run inside one bounded orchestrator; the application does not claim that three independent background services are deployed. It records human implementation evidence but does not inspect or change a real billing system, send owner messages, or infer that approval completed engineering work.
 
@@ -33,6 +37,48 @@ The demonstration uses fictional organizations and sources. Three named agent ro
 | **02: Agent Memory and Coordination** | A case, approved interpretation, pending tasks, conversation and past outcome survive the request that created them. Revisions decide when old memory is applicable. | Approve a choice, reload, continue pending work, inspect all three memory kinds, update a source and show rejected stale memory, then switch company. |
 
 ## Local setup
+
+### Docker: app, FalkorDB and graph browser
+
+The local Docker recipe runs PARALLAX together with the **official FalkorDB database image and FalkorDB Browser**. Use Docker Desktop, or Docker Engine with Compose v2, and Node.js 24 for the small configuration helper. No Cloud account or model key is required for guided investigations.
+
+```bash
+git clone https://github.com/ayushmanthehero-lab/Parallax.git
+cd Parallax
+node scripts/docker-setup.mjs
+docker compose --env-file .env.docker.local up --build --wait
+```
+
+The helper generates private local secrets and preserves valid existing settings. It leaves a malformed existing file unchanged and reports what needs repair. Compose installs and builds the application in its container; a host `npm ci` is not needed. `--wait` starts the services in the background and waits for their health checks. If Node.js is not installed, use the [Docker-only setup commands for macOS/Linux or PowerShell](deploy/local/README.md#start).
+
+| Local address | Purpose |
+|---|---|
+| [http://localhost:3000](http://localhost:3000) | PARALLAX workspace |
+| [http://localhost:3002](http://localhost:3002) | Official FalkorDB Browser for inspecting the real graph |
+| `127.0.0.1:6379` | Password-protected database connection for local tools |
+
+Open PARALLAX to create the synthetic workspace, then follow the [complete walkthrough](#complete-walkthrough). Check `/api/health`, inspect **Agent activity**, and run **Verification & audit** for a measured result from your own machine. The application connects to the `falkordb` service through the official SDK. The database uses a named volume at `/var/lib/falkordb/data` and AOF with `appendfsync always`. The Compose recipe pins the official `v4.16.3` image by digest.
+
+In FalkorDB Browser, connect to `localhost:6379` with username `default` and the generated local `FALKORDB_PASSWORD` if a login form appears. Select the `parallax_...` graph created by opening the application. This developer browser exposes the real database; the application's agents use their separate scoped MCP tools. Set `FALKORDB_BROWSER_ENABLED=0` in the Docker configuration if you do not need the browser.
+
+```bash
+docker compose --env-file .env.docker.local ps
+docker compose --env-file .env.docker.local exec app node deploy/local/verify.mjs
+```
+
+The verification command checks the running app's health, runs the actual lab against temporary graphs in the configured database and reports its measured result. It cleans up its verification workspace. To stop and remove the containers while retaining the named volume:
+
+```bash
+docker compose --env-file .env.docker.local down
+```
+
+Run `up --build --wait` again with the same configuration to resume. Keep the same browser hostname, visitor cookie and session secret to return to the same workspace. Removing volumes or resetting a workspace deletes data.
+
+**Execution status:** the Docker recipe is provided for local use; it has not been executed on your computer or in this environment, which has no Docker daemon. The verified real-engine application tests are recorded separately from Docker runtime validation. [The local Docker guide](deploy/local/README.md) contains exact configuration, browser connection, troubleshooting and persistence checks.
+
+### Native Node.js development
+
+Use this alternative when you want to run the web development server and the Lite-packaged engine directly.
 
 Use **Node.js 24** for the documented deployment, or a compatible Node.js version >=22. The official `falkordb@6.8.0` client requires Node >=22. The pinned gateway is Linux x64; its container supplies the native libraries needed by the packaged engine. Local native compatibility depends on the host. [FalkorDB resource notes](docs/FALKORDB_RESOURCES.md) explain the separate client and engine versions.
 
@@ -125,7 +171,7 @@ curl -b /tmp/parallax-cookies.txt \
   http://localhost:3000/api/investigate
 ```
 
-The complete endpoint/payload contract is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#api-contract). Exact graph queries and read/write boundaries are in [docs/QUERIES.md](docs/QUERIES.md).
+The complete endpoint/payload contract is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#9-api-contract). Exact graph queries and read/write boundaries are in [docs/QUERIES.md](docs/QUERIES.md).
 
 The MCP catalog is `find_handoffs`, `trace_evidence`, `recall_memory`, `check_obligation`, `affected_owners` and `open_clarification`. Internal calls use the actual SDK client/server over linked in-memory transports; memory and state live in FalkorDB. External Streamable HTTP at `POST /api/mcp` requires configured `PARALLAX_MCP_TOKEN`, its bearer header **and a valid workspace session cookie**. The transport is stateless; graph state persists. No general-purpose raw-query tool is exposed.
 
@@ -144,26 +190,27 @@ Standalone scripts use the process environment; unlike Next.js, they do not auto
 
 The in-app lab implements 15 checks: scenario verdicts, multi-hop evidence, native owner paths, canonical cases, stale approvals, command replay, task boundaries, fresh resolution, source history, tenant isolation, lease fencing, read-only enforcement, client continuity, concurrent writes/reads and fixture cleanup. Its workload uses 16 workers with 8 writes each and concurrent reads. Latency is measured for that run and host, not a capacity guarantee.
 
-The integration suite also exercises a separate local engine restart using append-only persistence. That orderly restart test and client reconnection are distinct from host failure, backup restoration or disaster recovery. See [operations](docs/OPERATIONS.md#persistence-backups-and-recovery).
+The integration suite also exercises a separate local engine restart using append-only persistence. That orderly restart test and client reconnection are distinct from host failure, backup restoration or disaster recovery. See [operations](docs/OPERATIONS.md#7-persistence-backups-and-recovery).
 
 ## Deploying
 
-The supported topology has two services:
+The selected hosted design connects the Vercel application directly to FalkorDB Cloud. FalkorDB provides the graph database, and its actual instance settings determine the available storage guarantees:
 
 ```mermaid
 flowchart TD
   B[Browser] -->|HTTPS and session| W[Next.js on Vercel]
   W --> A[Application and MCP tools]
   A --> C[Bounded checker]
-  A -->|Authenticated HTTPS| G[Railway graph gateway]
+  A -->|Official SDK and TLS| FC[FalkorDB Cloud]
   A -->|Optional inference| M[Configured model provider]
-  G -->|Private Unix socket| F[FalkorDB]
-  F --> V[Persistent /data volume]
+  FC --> V[Provisioned instance storage]
 ```
 
-Build the Railway service from [deploy/gateway/Dockerfile](deploy/gateway/Dockerfile) using the repository root as context. Attach a persistent volume at `/data`, configure private `FALKORDB_GATEWAY_TOKEN`, and expose the gateway HTTP port through Railway HTTPS. The engine listens on a private Unix socket, uses AOF with `appendfsync always`, and is guarded against multiple owners of one volume. Do not put database files in a Vercel Function.
+For FalkorDB Cloud, omit `FALKORDB_HTTP_URL` and `FALKORDB_SOCKET`, then set `FALKORDB_HOST`, `FALKORDB_PORT`, `FALKORDB_USERNAME`, `FALKORDB_PASSWORD` and `FALKORDB_TLS` from the actual provisioned instance. The supported public production path requires a TLS-enabled endpoint and `FALKORDB_TLS=true`. Confirm the selected instance's storage guarantees before setting `FALKORDB_PERSISTENCE=managed`; this flag labels operator-confirmed configuration and does not provision persistence. Cloud features vary by plan. See [direct Cloud setup](docs/OPERATIONS.md#direct-falkordb-cloud-option) and the [official plan features](https://www.falkordb.com/plans/).
 
-In Vercel, import the repository as a Next.js project with Node 24, install `npm ci --include=dev` and build `npm run build`. Set `FALKORDB_HTTP_URL`, the matching `FALKORDB_GATEWAY_TOKEN`, and a unique `PARALLAX_SESSION_SECRET` as server-side encrypted environment variables. Add optional model settings and an external MCP token as needed. Redeploy after changing environment settings. [docs/OPERATIONS.md](docs/OPERATIONS.md) contains ordered setup, health checks, release gates and recovery guidance.
+In Vercel, import the repository as a Next.js project with Node 24, install `npm ci --include=dev` and build `npm run build`. Set the selected graph connection and a unique `PARALLAX_SESSION_SECRET` as server-side encrypted environment variables. The gateway route uses `FALKORDB_HTTP_URL` and matching `FALKORDB_GATEWAY_TOKEN`; direct Cloud uses the endpoint settings above. Add optional model settings and an external MCP token as needed. Redeploy after changing environment settings. [docs/OPERATIONS.md](docs/OPERATIONS.md) contains ordered setup, health checks, release gates and recovery guidance.
+
+The optional self-hosting reference is [deploy/gateway/Dockerfile](deploy/gateway/Dockerfile), built from repository-root context. On Railway or a compatible host, it runs the real FalkorDB engine behind authenticated HTTPS with a private Unix socket and a persistent `/data` volume. Its AOF uses `appendfsync always`, and a file lock prevents multiple owners of one volume. This tested alternative is retained for reproducibility; it is not needed by the selected direct Cloud connection. Database files do not belong in a Vercel Function.
 
 ## Project map
 
@@ -178,6 +225,8 @@ In Vercel, import the repository as a Next.js project with Node 24, install `npm
 | `lib/server/model-provider.mjs` | Guided/direct/Gateway configuration and safe receipts |
 | `lib/server/db.mjs`, `http-db.mjs` | Official-client access and authenticated HTTPS transport |
 | `deploy/gateway/` | Pinned container, private engine and gateway |
+| `compose.yaml`, `deploy/local/` | Local app, official FalkorDB image, graph browser and named-volume setup |
+| `scripts/docker-setup.mjs` | Private local Docker configuration without replacing existing secrets |
 | `lib/server/verification.mjs`, `tests/` | Measured lab and automated behavioral tests |
 | `docs/` | Architecture, queries, operation guide and FalkorDB references |
 | `output/pdf/` | Rendered architecture/design brief when generated |
@@ -195,4 +244,3 @@ For an organizational rollout, add authenticated membership and roles, consented
 - [Setup, deployment, monitoring and recovery](docs/OPERATIONS.md)
 - [FalkorDB integration references](docs/FALKORDB_RESOURCES.md)
 - Generate the separate architecture PDF with `python3 scripts/render-architecture.py` (requires ReportLab; output is intentionally excluded from source control).
-

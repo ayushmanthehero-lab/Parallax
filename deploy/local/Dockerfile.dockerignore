@@ -1,0 +1,19 @@
+# Explicit build inputs keep private environment files out of the build context.
+**
+!package.json
+!package-lock.json
+!next.config.mjs
+!next-env.d.ts
+!tsconfig.json
+!app
+!app/**
+!components
+!components/**
+!lib
+!lib/**
+!public
+!public/**
+!deploy
+!deploy/local
+!deploy/local/Dockerfile
+!deploy/local/verify.mjs

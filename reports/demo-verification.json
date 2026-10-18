@@ -1,0 +1,204 @@
+{
+  "title": "PARALLAX three-minute demo verification",
+  "media": {
+    "programs": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "duration": "180.000000"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "duration": "180.000000"
+      }
+    ],
+    "format": {
+      "duration": "180.000000",
+      "size": "14603289"
+    },
+    "title": "PARALLAX narrated walkthrough",
+    "tempo": 0.8988465909090909,
+    "captionCues": 46,
+    "lastCaptionEnd": 178.0,
+    "captionBandPixels": 90,
+    "disclosure": "Synthetic demo; real FalkorDB; guided MCP; local browser recording; AI-generated Dolores narration."
+  },
+  "source": "Actual local production browser session with real FalkorDB",
+  "narration": {
+    "voice": "Dolores",
+    "provider": "Descript",
+    "generated": true
+  },
+  "chapterOffsets": [
+    {
+      "name": "Problem: the two trial clocks",
+      "time": 0
+    },
+    {
+      "name": "Real workspace overview",
+      "time": 25.654
+    },
+    {
+      "name": "Inspect the actual FalkorDB knowledge graph",
+      "time": 29.704
+    },
+    {
+      "name": "FalkorDB workflow diagram",
+      "time": 36.244
+    },
+    {
+      "name": "Investigate a real handoff",
+      "time": 54.225
+    },
+    {
+      "name": "Concrete counterexample: 14 versus 21",
+      "time": 72.727
+    },
+    {
+      "name": "One case, an accountable human decision",
+      "time": 91.608
+    },
+    {
+      "name": "Synthetic evidence for three human tasks",
+      "time": 108.501
+    },
+    {
+      "name": "Fresh full-domain check resolves the case",
+      "time": 120.833
+    },
+    {
+      "name": "Persistent episodic, semantic and procedural memory",
+      "time": 130.091
+    },
+    {
+      "name": "Switch company: separate tenant graph",
+      "time": 148.404
+    },
+    {
+      "name": "Measure the real FalkorDB coordination workload",
+      "time": 153.928
+    },
+    {
+      "name": "Both Graph Hacks tracks",
+      "time": 166.638
+    },
+    {
+      "name": "End of three-minute demonstration",
+      "time": 180.001
+    }
+  ],
+  "mutationRequests": [
+    {
+      "path": "/api/investigate",
+      "status": 200,
+      "time": 63.984
+    },
+    {
+      "path": "/api/cases/:case/decision",
+      "status": 200,
+      "time": 104.177
+    },
+    {
+      "path": "/api/tasks/:task/complete",
+      "status": 200,
+      "time": 110.981
+    },
+    {
+      "path": "/api/tasks/:task/complete",
+      "status": 200,
+      "time": 113.528
+    },
+    {
+      "path": "/api/tasks/:task/complete",
+      "status": 200,
+      "time": 116.144
+    },
+    {
+      "path": "/api/cases/:case/verify",
+      "status": 200,
+      "time": 120.701
+    },
+    {
+      "path": "/api/workspace",
+      "status": 200,
+      "time": 149.563
+    },
+    {
+      "path": "/api/verification",
+      "status": 200,
+      "time": 154.6
+    }
+  ],
+  "browserErrors": [],
+  "verificationLab": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "Six reviewed scenarios produce the expected bounded verdicts",
+        "passed": true
+      },
+      {
+        "name": "Source evidence is reached through real multi-hop relationships",
+        "passed": true
+      },
+      {
+        "name": "Native shortestPath reaches accountable human owners",
+        "passed": true
+      },
+      {
+        "name": "Sixteen coordinators converge on one canonical clarification",
+        "passed": true
+      },
+      {
+        "name": "Concurrent approvals accept one revision and reject stale writers",
+        "passed": true
+      },
+      {
+        "name": "Command replay is idempotent and changed payload reuse is rejected",
+        "passed": true
+      },
+      {
+        "name": "Approval never substitutes for implementation evidence",
+        "passed": true
+      },
+      {
+        "name": "Evidence-backed tasks and a fresh full-domain check resolve the case",
+        "passed": true
+      },
+      {
+        "name": "Reviewed source changes preserve history and reject stale case evidence",
+        "passed": true
+      },
+      {
+        "name": "Tenant definitions, conversations, cases and learned memory remain separate",
+        "passed": true
+      },
+      {
+        "name": "An expired agent cannot write after another worker takes ownership",
+        "passed": true
+      },
+      {
+        "name": "GRAPH.RO_QUERY rejects mutation and stores no forbidden node",
+        "passed": true
+      },
+      {
+        "name": "Acknowledged graph state survives independent client reconnection",
+        "passed": true
+      },
+      {
+        "name": "Sixteen workers preserve every acknowledged atomic write under concurrent reads",
+        "passed": true
+      },
+      {
+        "name": "Verification fixtures are removed without altering the user workspace",
+        "passed": true
+      }
+    ],
+    "displayedConcurrency": "Concurrent coordination\n\nMeasured operations against the selected FalkorDB engine.\n\nWorkers\n16\nOperations\n128\nAccepted writes\n128\nStale updates rejected\n15\nDuplicate cases\n0\nLost acknowledged writes\n0\nMedian latency\n8.0 ms\n95th percentile\n10.5 ms"
+  },
+  "scope": "Synthetic company data; guided MCP tools; actual local engine. No hosted Cloud, local Docker, or live LLM execution is claimed by this film."
+}

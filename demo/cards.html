@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PARALLAX · Demo title cards</title>
+<style>
+#film-stage{--film-bg:#f5f6ef;--film-ink:#273a31;--film-muted:#758479;--film-coral:#d7795b;--film-teal:#548879;position:fixed;inset:0;z-index:2147483000;background:var(--film-bg);color:var(--film-ink);font-family:Manrope,"DM Sans",Arial,sans-serif;pointer-events:none;opacity:0;transition:opacity .55s ease;overflow:hidden}
+#film-stage.is-visible{opacity:1}
+#film-stage *{box-sizing:border-box}
+#film-stage .film-scene{position:absolute;inset:0;padding:64px 94px;opacity:0;transition:opacity .4s ease;display:flex;flex-direction:column}
+#film-stage[data-scene="problem"] .film-problem,#film-stage[data-scene="workflow"] .film-workflow,#film-stage[data-scene="closing"] .film-closing{opacity:1}
+#film-stage .film-brand{display:flex;align-items:center;gap:15px;font-size:24px;font-weight:800;letter-spacing:3px}
+#film-stage .film-brand svg{width:43px;height:42px}
+#film-stage .film-brand b{color:var(--film-coral)}
+#film-stage .film-top{display:flex;align-items:center;justify-content:space-between}
+#film-stage .film-eyebrow{font-size:13px;letter-spacing:2.4px;font-weight:700;color:var(--film-muted);text-transform:uppercase}
+#film-stage .film-hero-title{font-size:62px;line-height:1.13;letter-spacing:-2.7px;font-weight:750;margin:52px 0 0}
+#film-stage .film-hero-title span{color:var(--film-coral)}
+#film-stage .film-subtitle{font-size:21px;line-height:1.55;color:var(--film-muted);margin-top:20px;max-width:930px}
+#film-stage .film-timeline{width:100%;height:330px;margin-top:28px;overflow:visible}
+#film-stage .film-timeline text{font-family:Manrope,"DM Sans",Arial,sans-serif}
+#film-stage .film-time-big{font-size:25px;font-weight:750;fill:var(--film-ink)}
+#film-stage .film-time-small{font-size:16px;fill:var(--film-muted)}
+#film-stage .film-row-label{font-size:17px;font-weight:750;fill:var(--film-ink)}
+#film-stage .film-bar-label{font-size:16px;font-weight:700}
+#film-stage .film-early{opacity:0;transition:opacity .7s}
+#film-stage[data-step="gap"] .film-early,#film-stage[data-step="meaning"] .film-early{opacity:1}
+#film-stage .film-meaning{position:absolute;right:96px;top:180px;width:370px;padding:24px 29px;border-radius:14px;background:#273a31;color:#f7f7ec;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+#film-stage[data-step="meaning"] .film-meaning{opacity:1;transform:translateY(0)}
+#film-stage .film-meaning small{font-size:12px;letter-spacing:1.6px;color:#b5c7ba}
+#film-stage .film-meaning p{font-size:25px;line-height:1.4;margin:13px 0 0}
+#film-stage .film-workflow .film-hero-title{font-size:48px;margin-top:36px}
+#film-stage .film-workflow .film-subtitle{font-size:19px;margin-top:11px}
+#film-stage .film-diagram{width:100%;height:520px;margin-top:20px;overflow:visible}
+#film-stage .film-diagram text{font-family:Manrope,"DM Sans",Arial,sans-serif}
+#film-stage .film-node-title{fill:var(--film-ink);font-size:20px;font-weight:750}
+#film-stage .film-node-detail{fill:var(--film-muted);font-size:15px}
+#film-stage .film-diagram .film-wire{fill:none;stroke:#91aa9b;stroke-width:2.4}
+#film-stage .film-diagram .film-active{stroke:var(--film-coral);stroke-width:3;stroke-dasharray:8 10;animation:film-flow 2.7s linear infinite}
+@keyframes film-flow{to{stroke-dashoffset:-72}}
+#film-stage .film-closing{background:var(--film-ink);color:#f5f6ef}
+#film-stage .film-closing .film-eyebrow{color:#b9c9bd}
+#film-stage .film-closing .film-hero-title{font-size:77px;margin-top:93px;max-width:1120px}
+#film-stage .film-closing .film-hero-title span{color:#e5a282}
+#film-stage .film-track-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:53px}
+#film-stage .film-track{border:1px solid #b4c9b940;border-radius:14px;padding:27px 31px;background:#ffffff04}
+#film-stage .film-track strong{display:block;font-size:24px;line-height:1.4;margin-top:14px;font-weight:650}
+#film-stage .film-track p{font-size:16px;line-height:1.6;color:#bacabe;margin:16px 0 0}
+#film-stage .film-final-line{font-size:20px;letter-spacing:.2px;position:absolute;bottom:126px;left:96px;color:#ced9cb}
+#film-recording-label{position:fixed;z-index:2147483600;bottom:11px;left:253px;display:flex;gap:9px;align-items:center;border-radius:5px;padding:6px 10px;background:#273a31e8;color:#e9f0e8;font:500 11px "DM Sans",Arial,sans-serif;letter-spacing:.3px;box-shadow:0 2px 10px #0001;pointer-events:none}
+#film-recording-label i{width:5px;height:5px;border-radius:100%;background:#d99b7d}
+#film-stage.is-visible~#film-recording-label{left:94px;background:transparent;color:#718175;padding-left:0;box-shadow:none}
+#film-stage[data-scene="closing"].is-visible~#film-recording-label{color:#b3c4b7}
+#film-cursor{position:fixed;z-index:2147483600;width:28px;height:34px;pointer-events:none;left:1430px;top:750px;filter:drop-shadow(0 2px 3px #23352d70);transition:opacity .25s;opacity:0}
+#film-click{position:fixed;z-index:2147483500;width:48px;height:48px;margin:-24px 0 0 -24px;border:2px solid #d7795bc0;background:#d7795b18;border-radius:50%;pointer-events:none;opacity:0}
+#film-click.pulse{animation:film-click .55s ease-out}
+@keyframes film-click{0%{opacity:1;transform:scale(.5)}100%{opacity:0;transform:scale(1.45)}}
+</style></head><body>
+<div id="film-stage" class="is-visible" data-scene="problem" data-step="intro">
+  <section class="film-scene film-problem">
+    <div class="film-top"><div class="film-brand"><svg viewBox="0 0 48 46"><path d="M4 8 26 2v29L4 37Z" fill="none" stroke="#273a31" stroke-width="3"/><path d="m19 15 23-6v29l-23 6Z" fill="#f5f6ef" stroke="#d7795b" stroke-width="3"/></svg><span>PARALLAX<b>.</b></span></div><div class="film-eyebrow">Graph Hacks · A connected-data agent</div></div>
+    <h1 class="film-hero-title">A fourteen-day trial.<br><span>Two different clocks.</span></h1>
+    <p class="film-subtitle">Product and Billing both agreed to “activated.”<br>The customer’s timeline reveals what that agreement missed.</p>
+    <svg class="film-timeline" viewBox="0 0 1408 360" aria-label="Email verified day 0, first use day 7, charge day 14, promised trial end day 21">
+      <line x1="190" y1="83" x2="1300" y2="83" stroke="#d4ded3" stroke-width="2"/>
+      <g stroke="#d9e0d5" stroke-dasharray="5 7"><path d="M190 86v210"/><path d="M550 86v210"/><path d="M910 86v210"/><path d="M1270 86v210"/></g>
+      <g text-anchor="middle"><text x="190" y="33" class="film-time-big">DAY 0</text><text x="190" y="58" class="film-time-small">Email verified</text><text x="550" y="33" class="film-time-big">DAY 7</text><text x="550" y="58" class="film-time-small">First use</text><text x="910" y="33" class="film-time-big">DAY 14</text><text x="910" y="58" class="film-time-small">Billing charges</text><text x="1270" y="33" class="film-time-big">DAY 21</text><text x="1270" y="58" class="film-time-small">Promised trial ends</text></g>
+      <g fill="#548879"><circle cx="190" cy="83" r="5"/><circle cx="550" cy="83" r="5"/><circle cx="1270" cy="83" r="5"/></g><circle cx="910" cy="83" r="6" fill="#d7795b"/>
+      <text x="8" y="151" class="film-row-label">PRODUCT</text><rect x="550" y="121" width="720" height="51" rx="8" fill="#e1ede2" stroke="#b3ccba"/><text x="910" y="153" text-anchor="middle" class="film-bar-label" fill="#4e7e65">14 days after first use</text>
+      <text x="8" y="229" class="film-row-label">BILLING</text><rect x="190" y="199" width="720" height="51" rx="8" fill="#f1ddd1" stroke="#e1b69b"/><text x="550" y="231" text-anchor="middle" class="film-bar-label" fill="#9e624b">14 days after email verification</text>
+      <g class="film-early"><path d="M910 283v12h360v-12" fill="none" stroke="#cc7155" stroke-width="2"/><text x="1090" y="330" text-anchor="middle" fill="#b76146" font-size="23" font-weight="750">Charged 7 days early</text></g>
+    </svg>
+    <div class="film-meaning"><small>THE QUESTION AT THE HANDOFF</small><p>Does the implemented rule honor the shared promise?</p></div>
+  </section>
+  <section class="film-scene film-workflow">
+    <div class="film-top"><div class="film-brand"><svg viewBox="0 0 48 46"><path d="M4 8 26 2v29L4 37Z" fill="none" stroke="#273a31" stroke-width="3"/><path d="m19 15 23-6v29l-23 6Z" fill="#f5f6ef" stroke="#d7795b" stroke-width="3"/></svg><span>PARALLAX<b>.</b></span></div><div class="film-eyebrow">01 / Evidence → Reasoning → Action → Memory</div></div>
+    <h1 class="film-hero-title">FalkorDB is the operational core.</h1>
+    <p class="film-subtitle">Every conclusion connects to reviewed meaning, an explicit obligation, and accountable owners.</p>
+    <svg class="film-diagram" viewBox="0 0 1408 520" aria-label="FalkorDB contains evidence and persistent memory. MCP agents read paths, run the checker and write action records.">
+      <defs><marker id="film-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#91aa9b"/></marker><marker id="film-arrow-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#d7795b"/></marker></defs>
+      <rect x="8" y="12" width="894" height="450" rx="18" fill="#eaf0e6" stroke="#cad9c9" stroke-width="1.5"/>
+      <text x="39" y="51" font-size="14" fill="#5c7b66" font-weight="750" letter-spacing="1.4">FALKORDB · TENANT-SCOPED PROPERTY GRAPH</text>
+      <rect x="41" y="79" width="223" height="112" rx="11" fill="#fffffc" stroke="#d0dacf"/><text x="64" y="113" class="film-node-title">Sources</text><text x="64" y="143" class="film-node-detail">Messages · specifications</text><text x="64" y="165" class="film-node-detail">Immutable revisions</text>
+      <rect x="330" y="79" width="252" height="112" rx="11" fill="#fffffc" stroke="#d0dacf"/><text x="353" y="113" class="film-node-title">Reviewed meaning</text><text x="353" y="143" class="film-node-detail">Interpretations · definitions</text><text x="353" y="165" class="film-node-detail">Executable rule ASTs</text>
+      <rect x="648" y="79" width="222" height="112" rx="11" fill="#fffffc" stroke="#d0dacf"/><text x="671" y="113" class="film-node-title">Obligations</text><text x="671" y="143" class="film-node-detail">Events · producers</text><text x="671" y="165" class="film-node-detail">Owners · handoffs</text>
+      <path class="film-wire" d="M264 136H329" marker-end="url(#film-arrow)"/><path class="film-wire" d="M582 136H647" marker-end="url(#film-arrow)"/>
+      <path class="film-wire" d="M456 191V229H758V192"/>
+      <text x="41" y="255" font-size="13" fill="#6c8272" letter-spacing="1.3" font-weight="700">EVIDENCE AND STATE CONNECT THROUGH VERSIONED RELATIONSHIPS</text>
+      <rect x="41" y="282" width="829" height="145" rx="12" fill="#273a31"/>
+      <text x="65" y="318" font-size="19" fill="#f1f4e9" font-weight="700">Persistent actions + shared memory</text>
+      <text x="65" y="350" font-size="16" fill="#c8d6c8">Counterexample → Clarification case → Human decision → Tasks</text>
+      <text x="65" y="380" font-size="16" fill="#dfb093">Episodic · Semantic · Procedural</text><text x="65" y="406" font-size="13" fill="#a6b9ab">Versioned evidence · revision guards · durable agent handoffs</text>
+      <rect x="982" y="63" width="411" height="222" rx="15" fill="#fcf8f0" stroke="#e0c8ae" stroke-width="1.5"/>
+      <text x="1010" y="103" class="film-node-title">MCP agent tools</text><text x="1010" y="136" class="film-node-detail">Discover → select → execute → record</text>
+      <rect x="1010" y="158" width="353" height="43" rx="7" fill="#f0e5d5"/><text x="1186" y="185" text-anchor="middle" font-size="16" fill="#8a6b40" font-weight="650">Multi-hop traversal + shortest path</text>
+      <rect x="1010" y="216" width="353" height="43" rx="7" fill="#f3dfd2"/><text x="1186" y="243" text-anchor="middle" font-size="16" fill="#a96649" font-weight="650">Bounded counterexample checker</text>
+      <path class="film-wire film-active" d="M870 136H980" marker-end="url(#film-arrow-coral)"/>
+      <path class="film-wire film-active" d="M1187 285V355H873" marker-end="url(#film-arrow-coral)"/>
+      <text x="999" y="386" font-size="16" fill="#9b654c" font-weight="700">Evidence and actions return</text><text x="999" y="409" font-size="16" fill="#9b654c" font-weight="700">to the same graph.</text>
+    </svg>
+  </section>
+  <section class="film-scene film-closing">
+    <div class="film-top"><div class="film-brand"><svg viewBox="0 0 48 46"><path d="M4 8 26 2v29L4 37Z" fill="none" stroke="#f1f4e9" stroke-width="3"/><path d="m19 15 23-6v29l-23 6Z" fill="#273a31" stroke="#e5a282" stroke-width="3"/></svg><span>PARALLAX<b>.</b></span></div><div class="film-eyebrow">Built for Graph Hacks</div></div>
+    <h1 class="film-hero-title">Shared words deserve<br><span>shared meaning.</span></h1>
+    <div class="film-track-grid"><div class="film-track"><div class="film-eyebrow">Track 01 · Connected-data agents</div><strong>Act on evidence.</strong><p>Graph tools · multi-hop reasoning · counterexamples<br>Explainable actions with accountable human owners</p></div><div class="film-track"><div class="film-eyebrow">Track 02 · Memory & coordination</div><strong>Remember and coordinate.</strong><p>Episodic, semantic and procedural memory<br>Persistent state · revision guards · tenant separation</p></div></div>
+    <div class="film-final-line">FalkorDB at the center. People own the decision.</div>
+  </section>
+</div>
+<div id="film-recording-label"><span>Synthetic demo</span><i></i><span>Real FalkorDB</span><i></i><span>Guided MCP</span><i></i><span>Local recording</span></div>
+<svg id="film-cursor" viewBox="0 0 28 34"><path d="M3 2 4 27l7-7 5 11 5-2-5-11h10Z" fill="#fffef4" stroke="#283a31" stroke-width="1.6" stroke-linejoin="round"/></svg><div id="film-click"></div>
+</body></html>

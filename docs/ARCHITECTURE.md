@@ -28,6 +28,10 @@ The initial domain has 12 candidate combinations, of which 9 are admissible. The
 
 ## 2. Runtime topology
 
+The selected hosted design uses **Vercel and FalkorDB Cloud**. The optional gateway branch is retained as a tested self-hosting reference; it is not a dependency of the Cloud route.
+
+For verification on a user's computer, `compose.yaml` pairs the application with an official FalkorDB image, the bundled graph browser and a named data volume. This is a local execution route for the same application and graph schema; it does not replace or complete the pending hosted connection. See [local Docker operations](OPERATIONS.md#local-docker-workflow). A Docker runtime result is not claimed until the stack is actually run.
+
 ```mermaid
 flowchart TD
   B[Browser workspace] -->|HTTPS and signed session| N[Next.js on Vercel]
@@ -39,7 +43,8 @@ flowchart TD
   M --> G[Server graph adapter]
   A --> G
   O --> L[Optional model provider]
-  G -->|HTTPS and service token| H[Railway gateway]
+  G -->|Official SDK and TLS| FC[FalkorDB Cloud]
+  G -.->|Optional HTTPS route| H[Self-hosted gateway]
   H -->|Private Unix socket| F[FalkorDB process]
   F --> D[Persistent /data volume]
 ```
@@ -53,11 +58,14 @@ flowchart TD
 | Model connection | `model-provider.mjs`, `@vercel/oidc@4.0.1` | Explicit guided/direct/Gateway modes, request-time credentials and safe usage receipts |
 | Graph client | Official `falkordb@6.8.0` | Parameterized reads/writes and schema helpers |
 | Engine packaging | Official `falkordblite@0.3.0`; Linux x64 binary `8.2.3-falkordb.4.16.3` | Actual Redis/FalkorDB process; engine module reports **41603** |
-| Persistent host | Gateway container, attached Railway volume | One engine owner, AOF persistence, private socket and authenticated HTTP operations |
+| Self-hosted option | Gateway container, attached Railway volume | One engine owner, AOF persistence, private socket and authenticated HTTP operations |
+| Selected Cloud route | Official client to the configured FalkorDB endpoint | TLS connection; actual persistence and recovery depend on provisioned instance settings |
 
 The client, Lite wrapper and database module have different version numbers. This project does not claim that the 6.8 client means a 6.8 engine. The native binary needs libraries supplied by the Node 24 Trixie container. The gateway pins the binary separately because Lite 0.3.0's published optional binary dependency is inconsistent with the available package. See [FalkorDB resource notes](FALKORDB_RESOURCES.md).
 
-The application uses a module-scoped lazy connection. With `FALKORDB_HTTP_URL`, it selects the HTTPS adapter; otherwise it uses the official client with an explicitly configured socket or host. It does not start a production database inside a Vercel Function. Hosted HTTPS requests terminate at Railway; the private engine has TCP disabled. Gateway credentials are server-only.
+**FalkorDB is the database; FalkorDB Cloud is the selected host.** Connected evidence, actions, memory, conversation and shared agent state all live in FalkorDB. Vercel serves the application and connects directly through the official client. The optional self-hosted gateway can run the same real engine on Railway compute with an attached volume; it is not needed by the Cloud route.
+
+The application uses a module-scoped lazy connection. With `FALKORDB_HTTP_URL`, it selects the HTTPS adapter; otherwise it uses the official client with an explicitly configured socket or host. For direct Cloud, omit the HTTP URL and local socket, then provide the actual hostname, port, username, password and TLS setting. A public production connection requires a TLS-enabled instance; its storage guarantees must be confirmed separately before labeling it managed persistence. See [the direct Cloud runbook](OPERATIONS.md#direct-falkordb-cloud-option). The application does not start a production database inside a Vercel Function. For the gateway route, HTTPS terminates at the hosting boundary and the private engine has TCP disabled. Connection credentials are server-only.
 
 ## 3. Graph model
 
@@ -103,6 +111,8 @@ The trial graph contains real paths from the billing rule to `ACCOUNT_ACTIVATED`
 | VerificationReport | Lab status, checks, measured concurrency and timestamps | Stored as an independent typed report node |
 
 Version changes add `Rule-[:SUPERSEDES]->Rule` and `SourceRevision-[:SUPERSEDES]->SourceRevision`. Successful resolution adds `Case-[:VERIFIED_BY]->VerificationRun` and `Decision-[:ADOPTED]->Rule`. The existing `RESOLVES` edge describes a decision's intended relation to a case; **case status and fresh verification**, not that edge alone, establish resolution. Agents do not have fabricated `READ_MEMORY` or `PERFORMED` edges: role ownership and actual operations are recorded on ToolCall properties and run receipts.
+
+New rule versions retain department ownership and reconstruct `READS_EVENT` links from the adopted expression and existing modeled input/event bindings, including named-rule dependencies. Links are scoped to events in the actual scenario. Missing producers remain missing; source text does not invent a new event contract. Historical rule versions keep their existing provenance. These guarded version-creation paths do not migrate or backfill existing visitor graphs.
 
 ## 4. Bounded verification
 
@@ -251,7 +261,7 @@ The application includes behavioral tests for expression validity, bounds, injec
 
 The in-app lab performs 15 isolated checks. Sixteen workers attempt eight atomic writes each alongside reads; it measures acknowledged receipts, stored increments, p50/p95/max latency, duplicate cases and rejected stale approvals. The caller's sources, decisions, tasks and messages are not fixture data. Only the resulting measured report is retained. See `lib/server/verification.mjs` and [operations](OPERATIONS.md).
 
-A client reconnect proves client continuity. A local orderly engine restart with AOF proves that tested restart path. Neither establishes recovery from corrupted storage, host loss or backup restoration. Railway volume configuration, a hosted restart and a restore drill are separate operating checks. Current limits include one persistent engine, finite curated scenarios, no external connector ingestion, no production SSO/RBAC, no autonomous queue, and no automatic independent validation of submitted implementation evidence.
+A client reconnect proves client continuity. A local orderly engine restart with AOF proves that tested restart path. Neither establishes recovery from corrupted storage, host loss or backup restoration. Actual host storage configuration, a hosted restart and a restore drill are separate operating checks. Current limits include one graph service, finite curated scenarios, no external connector ingestion, no production SSO/RBAC, no autonomous queue, and no automatic independent validation of submitted implementation evidence.
 
 ## 13. FalkorDB resources used and deliberately optional
 
@@ -282,4 +292,3 @@ Primary platform references, reviewed 18 October 2026:
 - [Vercel Node runtime](https://vercel.com/docs/functions/runtimes/node-js), [AI Gateway authentication](https://vercel.com/docs/ai-gateway/authentication-and-byok)
 - [Railway volumes](https://docs.railway.com/volumes)
 - [Graph Hacks resources](https://www.wemakedevs.org/hackathons/falkordb/resources)
-

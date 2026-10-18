@@ -1,0 +1,71 @@
+name: parallax
+
+services:
+  falkordb:
+    image: falkordb/falkordb:v4.16.3@sha256:c7082788609c4d7033129e55272581c49322c4cd7024cec75464ca343b6a6fb5
+    restart: unless-stopped
+    stop_grace_period: 30s
+    environment:
+      # The official entrypoint appends --dir using this path after REDIS_ARGS.
+      FALKORDB_DATA_PATH: /var/lib/falkordb/data
+      REDIS_ARGS: >-
+        --requirepass ${FALKORDB_PASSWORD:?Run the Docker setup script first}
+        --appendonly yes --appendfsync always --no-appendfsync-on-rewrite no
+        --aof-load-truncated no
+      FALKORDB_ARGS: THREAD_COUNT 2 TIMEOUT 15000 MAX_QUEUED_QUERIES 100 RESULTSET_SIZE 10000
+      REDISCLI_AUTH: ${FALKORDB_PASSWORD:?Run the Docker setup script first}
+      BROWSER: ${FALKORDB_BROWSER_ENABLED:-1}
+      NEXTAUTH_URL: http://localhost:${FALKORDB_BROWSER_PORT:-3002}
+      NEXTAUTH_SECRET: ${FALKORDB_BROWSER_SECRET:?Run the Docker setup script first}
+      FALKORDB_HOST: localhost
+      FALKORDB_PORT: "6379"
+      FALKORDB_USERNAME: default
+      FALKORDB_PASSWORD: ${FALKORDB_PASSWORD:?Run the Docker setup script first}
+    ports:
+      - "127.0.0.1:${PARALLAX_DB_PORT:-6379}:6379"
+      - "127.0.0.1:${FALKORDB_BROWSER_PORT:-3002}:3000"
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-e", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  app:
+    build:
+      context: .
+      dockerfile: deploy/local/Dockerfile
+    restart: unless-stopped
+    stop_grace_period: 30s
+    init: true
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+      FALKORDB_USERNAME: default
+      FALKORDB_PASSWORD: ${FALKORDB_PASSWORD:?Run the Docker setup script first}
+      FALKORDB_TLS: "false"
+      PARALLAX_SESSION_SECRET: ${PARALLAX_SESSION_SECRET:?Run the Docker setup script first}
+      PARALLAX_MCP_TOKEN: ${PARALLAX_MCP_TOKEN:?Run the Docker setup script first}
+    ports:
+      - "127.0.0.1:${PARALLAX_PORT:-3000}:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - --input-type=module
+        - -e
+        - "const r=await fetch('http://127.0.0.1:3000/api/health',{signal:AbortSignal.timeout(4000)});const b=await r.json();if(!r.ok||!b.ok||b.data?.status!=='connected'||b.data?.engine!=='FalkorDB'||!b.data?.persistent)process.exit(1)"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+volumes:
+  falkordb_data:

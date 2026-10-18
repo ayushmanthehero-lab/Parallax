@@ -279,4 +279,3 @@ await graph.createNodeFulltextIndex('SourceRevision', 'text', 'title');
 Inspect schema with `CALL db.indexes()` and `CALL db.constraints()` using an operator-selected graph. A constraint declaration and an operational constraint are distinct; validate its reported status when preparing a new engine or migrating data. The app uses a uniqueness constraint and ID-producing constructors; it does not currently install the optional MANDATORY constraint illustrated in the broader resource notes.
 
 For engine changes, run the suite against the exact hosted module. Do not infer compatibility from a package's major version alone. Queries are bounded, values are parameterized, and their authority comes from the application context, not from source text or model instructions.
-

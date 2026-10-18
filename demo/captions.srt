@@ -1,0 +1,188 @@
+1
+00:00:02,000 --> 00:00:04,715
+Every team agreed to a fourteen-day trial.
+
+2
+00:00:05,271 --> 00:00:08,408
+Product meant fourteen days after the customer's first use.
+
+3
+00:00:09,009 --> 00:00:12,525
+Billing meant fourteen days after email verification.
+
+4
+00:00:13,202 --> 00:00:15,740
+The same word, activated, hid a different event.
+
+5
+00:00:16,262 --> 00:00:21,303
+A customer who starts using the product
+a week later is charged seven days early.
+
+6
+00:00:21,872 --> 00:00:25,588
+PARALLAX finds this false agreement before the customer does.
+
+7
+00:00:25,900 --> 00:00:30,416
+It connects what teams promise, what systems do, and the people
+
+8
+00:00:30,416 --> 00:00:31,907
+responsible for the handoff.
+
+9
+00:00:33,220 --> 00:00:35,834
+FalkorDB is the operational core.
+
+10
+00:00:36,569 --> 00:00:40,218
+Sources connect to reviewed interpretations, executable rules,
+
+11
+00:00:40,630 --> 00:00:42,944
+shared obligations, events, and owners.
+
+12
+00:00:43,455 --> 00:00:48,729
+Agents discover tools through MCP, follow multiple graph hops, run a
+
+13
+00:00:48,729 --> 00:00:53,079
+bounded counterexample check, and save
+evidence and actions back into the graph.
+
+14
+00:00:54,234 --> 00:00:57,125
+Here is the workspace, with six handoff scenarios.
+
+15
+00:00:58,160 --> 00:01:00,052
+Let's investigate the trial handoff.
+
+16
+00:01:01,098 --> 00:01:04,669
+The investigator traces Product's promise through Engineering's event
+
+17
+00:01:04,669 --> 00:01:06,370
+contract to Billing's scheduler.
+
+18
+00:01:07,071 --> 00:01:11,222
+The verifier checks both rules against the same customer timeline.
+
+19
+00:01:12,535 --> 00:01:17,363
+The result is concrete: email verified on day zero, first use on day
+
+20
+00:01:17,363 --> 00:01:21,968
+seven, a charge on day fourteen, but promised access until day twenty-one.
+
+21
+00:01:22,781 --> 00:01:27,731
+Each result includes its input bounds,
+source versions, and evaluation trace.
+
+22
+00:01:28,266 --> 00:01:30,636
+Different wording alone never proves a conflict.
+
+23
+00:01:31,350 --> 00:01:36,345
+The coordinator opens one clarification
+case and finds accountable owners using
+
+24
+00:01:36,345 --> 00:01:39,071
+FalkorDB's shortest-path algorithm.
+
+25
+00:01:39,683 --> 00:01:41,741
+A person chooses the intended meaning.
+
+26
+00:01:42,208 --> 00:01:46,080
+Approval records the decision and creates implementation tasks.
+
+27
+00:01:46,492 --> 00:01:47,638
+The case stays open.
+
+28
+00:01:48,511 --> 00:01:52,182
+For this synthetic demo, we now record evidence for the event,
+
+29
+00:01:52,360 --> 00:01:54,519
+billing, and quality-assurance tasks.
+
+30
+00:01:55,264 --> 00:01:59,369
+Only after every task is complete can PARALLAX run a fresh check
+
+31
+00:01:59,447 --> 00:02:01,094
+over the full declared domain.
+
+32
+00:02:02,017 --> 00:02:05,110
+The adopted mapping passes, and the case resolves.
+
+33
+00:02:05,867 --> 00:02:08,537
+The original counterexample remains in history.
+
+34
+00:02:09,525 --> 00:02:11,504
+Memory survives the conversation.
+
+35
+00:02:11,972 --> 00:02:13,952
+Episodic memory records what happened.
+
+36
+00:02:14,519 --> 00:02:17,022
+Semantic memory preserves reviewed meaning.
+
+37
+00:02:17,489 --> 00:02:21,094
+Procedural memory records how the team handles this kind of handoff.
+
+38
+00:02:21,596 --> 00:02:25,143
+Every agent can recall relevant memory, while revision checks
+
+39
+00:02:25,143 --> 00:02:27,135
+reject outdated conclusions.
+
+40
+00:02:28,813 --> 00:02:32,061
+Separate tenant graphs keep the two demo companies apart.
+
+41
+00:02:32,651 --> 00:02:37,513
+The verification lab measures concurrent
+reads and writes, revision conflicts,
+
+42
+00:02:37,702 --> 00:02:40,160
+idempotency, and agent ownership.
+
+43
+00:02:40,861 --> 00:02:45,590
+These are measured checks against FalkorDB, with results you can inspect.
+
+44
+00:02:46,641 --> 00:02:51,125
+PARALLAX brings both Graph Hacks tracks together: agents that act
+
+45
+00:02:51,125 --> 00:02:55,041
+on connected evidence, and agents that remember and coordinate.
+
+46
+00:02:55,564 --> 00:02:58,000
+Shared words deserve shared meaning.
